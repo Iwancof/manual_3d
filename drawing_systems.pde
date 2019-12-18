@@ -1,5 +1,3 @@
-
-
 class Vertex {
   Matrix vec = new Matrix(3, 1);
 
@@ -9,7 +7,7 @@ class Vertex {
     vec.values[2][0] = z;
   }
   public Vertex(Matrix m) {
-    if(m.row != 3 || m.column != 1) {
+    if (m.row != 3 || m.column != 1) {
       throw new IllegalArgumentException("Argument msut be 3*1 matrix(this is 3 dimension vector)");
     }
     vec = m;
@@ -19,101 +17,64 @@ class Vertex {
     if (vec.z() <= 0) {
       throw new ArithmeticException("Divide by 0. Argument must be above 0.");
     }
-    return vec.x() / vec.z();
+    return vec.x() / (vec.z() / 300);
   }
   float pos_y() {
     if (vec.z() <= 0) {
       throw new ArithmeticException("Divide by 0. Argument must be above 0.");
     }
-    return vec.y() / vec.z();
+    return vec.y() / (vec.z() / 300);
   }
-  void debug_print(Vertex p,float magni) {
-    Vertex t = new Vertex(vec.Minus(p.vec));
-    if(t.vec.z() <= 0) return;
-    crect(t.pos_x() * magni,t.pos_y() * magni,5,5);
+  void debug_print(Vertex pl, float roll_angle, float pitch_angle, float yaw_angle) {
+    Vertex t = convert_to_vector(pl, roll_angle, pitch_angle, yaw_angle);
+
+    if (t.vec.z() <= 0) return;
+
+    crect(t.pos_x(), t.pos_y(), 5, 5);
+  }
+  Vertex convert_to_vector(Vertex pl, float roll_angle, float pitch_angle, float yaw_angle) {
+    Vertex t = new Vertex(vec.Minus(pl.vec));
+    t.vec.values[0][0] -= 1;
+    t.vec.values[1][0] -= 1;
+    t.vec.values[2][0] -= 1;
+
+    Matrix r = create_roll_rotaion_matrix(roll_angle);
+    Matrix p = create_pitch_rotation_matrix(pitch_angle);
+    Matrix y = create_yaw_rotation_matrix(yaw_angle);
+
+    t.vec = r.Product(t.vec);
+    t.vec = p.Product(t.vec);
+    t.vec = y.Product(t.vec);
+
+    t.vec.values[0][0] += 1;
+    t.vec.values[1][0] += 1;
+    t.vec.values[2][0] += 1;
+
+    return t;
   }
 }
 
-class Matrix {
-  public float[][] values;
-  public int row, column;
-
-  public Matrix(int a, int b) {
-    row = a;
-    column = b;
-
-    if (row <= 0 || column <= 0) {
-      throw new IllegalArgumentException("Argument must be aboved 0.");
-    }
-
-    values = new float[row][column];
+class Square {
+  Vertex[] points = new Vertex[4];
+  public Square(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
+    points[0] = v1;
+    points[1] = v2;
+    points[2] = v3;
+    points[3] = v4;
   }
 
-  public void dprint() {
-    for (int r = 0; r < row; r++) {
-      for (int c = 0; c < column; c++) {
-        print(values[r][c] + " ");
-      }
-      println();
-    }
-  }
-
-  public Matrix Product(Matrix y) {
-    Matrix x = this, ret = new Matrix(x.row, y.column);
-
-    for (int r = 0; r < x.row; r++) {
-      for (int c = 0; c < y.column; c++) {
-        float sum = 0;
-        for (int i = 0; i < x.column; i++) {
-          sum += x.values[r][i] * y.values[i][c];
-        }
-        ret.values[r][c] = sum;
-      }
-    } 
-    return ret;
-  }
-  public Matrix Plus(Matrix y) {
-    Matrix x = this, ret = new Matrix(x.row, y.column);
-    if (x.row != y.row || x.column != y.column) {
-      throw new IllegalArgumentException("Row and column are must be matched.");
-    }
-    for (int r = 0; r < x.row; r++) {
-      for (int c = 0; c < x.column; c++) {
-        ret.values[r][c] = x.values[r][c] + y.values[r][c];
-      }
+  void dprint() {
+    Vertex[] ps = new Vertex[4];
+    for (int i = 0; i < 4; i++) {
+      ps[i] = points[i].convert_to_vector(player, r_angle, p_angle, y_angle);
+      if (ps[i].vec.z() <= 0) return;
     }
 
-    return ret;
-  }
-  public Matrix Multiple(float p) {
-    Matrix ret = new Matrix(row, column);
-    for (int r = 0; r < row; r++) {
-      for (int c = 0; c < column; c++) {
-        ret.values[r][c] = values[r][c] * p;
-      }
-    }
-    return ret;
-  }
-  public Matrix Minus(Matrix y) {
-    return this.Plus(y.Multiple(-1));
-  }
-
-  public float x() {
-    if (column != 1) {
-      throw new IllegalStateException("This method must be called from vector matrix.");
-    }
-    return values[0][0];
-  }
-  public float y() {
-    if (column != 1) {
-      throw new IllegalStateException("This method must be called from vector matrix.");
-    }
-    return values[1][0];
-  }
-  public float z() {
-    if (column != 1) {
-      throw new IllegalStateException("This method must be called from vector matrix.");
-    }
-    return values[2][0];
+    quad(
+      ps[0].pos_x(), ps[0].pos_y(), 
+      ps[1].pos_x(), ps[1].pos_y(), 
+      ps[2].pos_x(), ps[2].pos_y(), 
+      ps[3].pos_x(), ps[3].pos_y()
+      );
   }
 }
