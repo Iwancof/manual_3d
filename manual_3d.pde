@@ -51,8 +51,8 @@ void draw() {
   if (key_press[1]) move.values[0][0] -= 0.5;
   if (key_press[2]) move.values[2][0] -= 0.1;
   if (key_press[3]) move.values[0][0] += 0.5;
-  if (key_press[4]) move.values[1][0] += 0.7;
-  if (key_press[5]) move.values[1][0] -= 0.7;
+  if (key_press[4]) player.vec.values[1][0] += 0.7;
+  if (key_press[5]) player.vec.values[1][0] -= 0.7;
   if (key_press[6]) r_angle += 0.01;
   if (key_press[7]) p_angle += 0.01; 
   if (key_press[8]) y_angle += 0.01;
@@ -62,12 +62,12 @@ void draw() {
   pmx = mouseX;
   pmy = mouseY;
 
-  println("(x,y) = (" + dx + "," + dy + ")");
+  //println("(x,y) = (" + dx + "," + dy + ")");
 
   p_angle += (float)dx / 100.;
   r_angle -= (float)dy / 100.;
 
-  //move = create_roll_rotaion_matrix(-r_angle).Product(move);
+  move = create_roll_rotation_matrix(-r_angle).Product(move);
   move = create_pitch_rotation_matrix(-p_angle).Product(move);
   move = create_yaw_rotation_matrix(-y_angle).Product(move);
 

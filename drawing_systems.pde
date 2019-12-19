@@ -38,6 +38,9 @@ class Vertex {
     Vertex t = convert_to_vector(pl);
     return new Point(t.pos_x(),t.pos_y());
   }
+  Point to_disp_point() {
+    return new Point(pos_x(),pos_y());
+  }
     
   boolean can_draw() {
     return vec.z() > 0;
