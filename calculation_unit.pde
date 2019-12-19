@@ -83,7 +83,7 @@ class Matrix {
   }
 }
 
-Matrix create_roll_rotaion_matrix(float angle) {
+Matrix create_roll_rotation_matrix(float angle) {
   Matrix ret = new Matrix(3,3);
   ret.values[0][0] = 1;
   ret.values[0][1] = 0;

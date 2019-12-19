@@ -25,26 +25,37 @@ class Vertex {
     }
     return vec.y() / (vec.z() / 300);
   }
-  void debug_print(Vertex pl, float roll_angle, float pitch_angle, float yaw_angle) {
-    Vertex t = convert_to_vector(pl, roll_angle, pitch_angle, yaw_angle);
+  
+  void debug_print(Vertex pl) {
+    Vertex t = convert_to_vector(pl);
 
-    if (t.vec.z() <= 0) return;
+    if (!t.can_draw()) return;
 
     crect(t.pos_x(), t.pos_y(), 5, 5);
   }
-  Vertex convert_to_vector(Vertex pl, float roll_angle, float pitch_angle, float yaw_angle) {
+  
+  Point to_point(Vertex pl) {
+    Vertex t = convert_to_vector(pl);
+    return new Point(t.pos_x(),t.pos_y());
+  }
+    
+  boolean can_draw() {
+    return vec.z() > 0;
+  }
+  
+  Vertex convert_to_vector(Vertex pl) {
     Vertex t = new Vertex(vec.Minus(pl.vec));
     t.vec.values[0][0] -= 1;
     t.vec.values[1][0] -= 1;
     t.vec.values[2][0] -= 1;
 
-    Matrix r = create_roll_rotaion_matrix(roll_angle);
-    Matrix p = create_pitch_rotation_matrix(pitch_angle);
-    Matrix y = create_yaw_rotation_matrix(yaw_angle);
+    //Matrix r = create_roll_rotation_matrix(roll_angle);
+    //Matrix p = create_pitch_rotation_matrix(pitch_angle);
+    //Matrix y = create_yaw_rotation_matrix(yaw_angle);
 
-    t.vec = r.Product(t.vec);
-    t.vec = p.Product(t.vec);
-    t.vec = y.Product(t.vec);
+    t.vec = p_rotate.Product(t.vec);
+    t.vec = r_rotate.Product(t.vec);
+    t.vec = y_rotate.Product(t.vec);
 
     t.vec.values[0][0] += 1;
     t.vec.values[1][0] += 1;
@@ -66,8 +77,8 @@ class Square {
   void dprint() {
     Vertex[] ps = new Vertex[4];
     for (int i = 0; i < 4; i++) {
-      ps[i] = points[i].convert_to_vector(player, r_angle, p_angle, y_angle);
-      if (ps[i].vec.z() <= 0) return;
+      ps[i] = points[i].convert_to_vector(player);
+      if (!ps[i].can_draw()) return;
     }
 
     quad(
@@ -78,3 +89,15 @@ class Square {
       );
   }
 }
+
+class Point {
+  float x,y;
+  public Point(float x,float y) {
+    this.x = x;
+    this.y = y;
+  }
+  public void ddraw() {
+    crect(x, y, 5, 5);
+  }
+}
+    

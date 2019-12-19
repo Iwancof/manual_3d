@@ -1,8 +1,6 @@
 Vertex[] v = new Vertex[8];
 Square s;
 Vertex player;
-Vertex inf = new Vertex(0, 0, 100000);
-
 float ws_width = 1000;
 float ws_height = 1000;
 
@@ -40,14 +38,11 @@ void setup() {
   pmy = mouseY;
 }
 
-float p_angle = 0;
-float y_angle = 0;
-float r_angle = 0;
-
 int pmx, pmy;
 
 void draw() {
   background(204);
+  Drawing_initialize();
 
   //move
   Matrix move = new Matrix(3, 1);
@@ -73,15 +68,15 @@ void draw() {
   r_angle -= (float)dy / 100.;
 
   //move = create_roll_rotaion_matrix(-r_angle).Product(move);
-  //move = create_pitch_rotation_matrix(-p_angle).Product(move);
-  //move = create_yaw_rotation_matrix(-y_angle).Product(move);
+  move = create_pitch_rotation_matrix(-p_angle).Product(move);
+  move = create_yaw_rotation_matrix(-y_angle).Product(move);
 
   player.vec = player.vec.Plus(move);
 
   //player.vec.values[0][0] += 0.1;
 
   for (int i = 0; i < 8; i++) {
-    v[i].debug_print(player, r_angle, p_angle, y_angle);
+    v[i].debug_print(player);
   }
   
   
