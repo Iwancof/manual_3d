@@ -1,8 +1,24 @@
 void crect(float x, float y, float sx, float sy) { //Controled? Center? 
-  rect(x + (ws_width / 2), ws_height - (y + (ws_height / 2)), sx, sy);
+  rect(ccoord_x(x), ccoord_y(y), sx, sy);
 }
 void cline(float x1, float y1, float x2, float y2) {
-  line(x1 + (ws_width / 2), ws_height - (y1 + (ws_height / 2)), x2 + (ws_width / 2), ws_height - (y2 + (ws_height / 2)));
+  line(ccoord_x(x1), ccoord_y(y1), ccoord_x(x2), ccoord_y(y2));
+}
+void cline(Point p1, Point p2) {
+  cline(p1.x, p1.y, p2.x, p2.y);
+}
+void cquad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+  quad(ccoord_x(x1), ccoord_y(y1), 
+    ccoord_x(x2), ccoord_y(y2), 
+    ccoord_x(x3), ccoord_y(y3), 
+    ccoord_x(x4), ccoord_y(y4)
+    );
+}
+float ccoord_x(float x) {
+  return x + (ws_width / 2);
+}
+float ccoord_y(float y) {
+  return ws_height - (y + (ws_height / 2));
 }
 
 void Drawing_initialize() {
@@ -18,13 +34,7 @@ Matrix r_rotate;
 Matrix p_rotate;
 Matrix y_rotate;
 
-Vertex xp_inf = new Vertex(1000000, 0, 0);
-Vertex xm_inf = new Vertex(-1000000, 0, 0);
-Vertex yp_inf = new Vertex(0, 1000000, 0);
-Vertex ym_inf = new Vertex(0, -1000000, 0);
-Vertex zp_inf = new Vertex(0, 0, 1000000);
-Vertex zm_inf = new Vertex(0, 0, -1000000);
-Vertex origin = new Vertex(0, 0, 0);
+Vertex[] under_player_axises = new Vertex[7];
 
 void Initialize_rotate_matrixes() {
   r_rotate = create_roll_rotation_matrix(r_angle);
@@ -33,59 +43,39 @@ void Initialize_rotate_matrixes() {
 }
 
 void Draw_axis() {
-  /*
-  Matrix visual_position_correction = new Vertex(0,-1,1).vec;  
-   //move = create_roll_rotaion_matrix(-r_angle).Product(move);
-   visual_position_correction = create_pitch_rotation_matrix(-p_angle).Product(visual_position_correction);
-   visual_position_correction = create_yaw_rotation_matrix(-y_angle).Product(visual_position_correction);
-   
-   origin.vec = player.vec.Plus(visual_position_correction);
-   origin.debug_print(player);
-   */
-
   //Draw x_axis;  
-  Matrix currection_base_x = new Vertex(1, 0, 0).vec;
-  Matrix currection_base_y = new Vertex(0, 1, 0).vec;
-  Matrix currection_base_z = new Vertex(0, 0, 1).vec;
-
-  currection_base_x = create_roll_rotation_matrix(-r_angle).Product(currection_base_x); 
-  currection_base_x = create_pitch_rotation_matrix(-p_angle).Product(currection_base_x); 
-  currection_base_x = create_yaw_rotation_matrix(-y_angle).Product(currection_base_x); 
-
-  currection_base_y = create_roll_rotation_matrix(-r_angle).Product(currection_base_y); 
-  currection_base_y = create_pitch_rotation_matrix(-p_angle).Product(currection_base_y); 
-  currection_base_y = create_yaw_rotation_matrix(-y_angle).Product(currection_base_y); 
-
-  currection_base_z = create_roll_rotation_matrix(-r_angle).Product(currection_base_z); 
-  currection_base_z = create_pitch_rotation_matrix(-p_angle).Product(currection_base_z); 
-  currection_base_z = create_yaw_rotation_matrix(-y_angle).Product(currection_base_z); 
-
-  float t = (currection_base_x.values[0][0] * player.vec.values[0][0] + 
-    currection_base_x.values[1][0] * player.vec.values[1][0] + 
-    currection_base_x.values[2][0] * player.vec.values[2][0]) /
-    currection_base_x.values[2][0];
-
-  println(t);
-
-  //new Vertex(0,0,t).debug_print(player);
-
-  Vertex test_point = new Vertex(0, 0, t).convert_to_vector(player);
-  Vertex zp_inf_disp = zp_inf.convert_to_vector(player);
-  if (test_point.can_draw() && zp_inf_disp.can_draw()) {
-    cline(test_point.pos_x(), test_point.pos_y(), zp_inf_disp.pos_x(), zp_inf_disp.pos_y());
-    test_point.to_disp_point().ddraw();
-    zp_inf.debug_print(player);
-  }
-  println(zp_inf_disp.can_draw());
+  
   /*
-  new Vertex(currection_base_x).debug_print(player);
-   new Vertex(currection_base_y).debug_print(player);
-   new Vertex(currection_base_z).debug_print(player);
-   */
+
+  float t = (1 - cos(r_angle) * sin(p_angle)) / (cos(r_angle) * cos(p_angle));
+
+  //for (float t = 0; t < 10; t += 1) {
+  /*
+    float x = cos(p_angle) - t * sin(p_angle) * cos(r_angle);
+   float y = -t * sin(r_angle);
+   float z = sin(r_angle) + t * cos(p_angle) * cos(r_angle);
+   *
+  float x = cos(p_angle) - t * sin(p_angle);
+  float y = -sin(r_angle) * sin(p_angle) - t * sin(r_angle) * cos(p_angle);
+  float z = cos(r_angle) * sin(p_angle) + t * cos(r_angle) * cos(p_angle);
+
+  println("(x,y,z) = (" + x + "," + y + "," + z + ")");
+  crect(x / z, y / z, 5, 5);
+  //}
+  
+  */
 
   /*
-    zp_inf.to_point(player).ddraw();
-   zm_inf.to_point(player).ddraw();
+  
+   for (int z = 0; z  < 10; z++) {
+   for (int i = 0; i < 7; i++) {
+   under_player_axises[i] = new Vertex(player.vec.Plus(new Vertex(1 * (i - 3), -1, z).vec));
+   //under_player_axises[i].debug_print(player);
+   //println(i + " : " + under_player_axises[i].can_draw_by(player));
+   if (under_player_axises[i].can_draw_by(player) && zp_inf.can_draw_by(player))
+   cline(under_player_axises[i].to_point(player), zp_inf.to_point(player));
    }
+   }
+   
    */
 }

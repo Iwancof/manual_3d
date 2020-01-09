@@ -1,38 +1,23 @@
-Vertex[] v = new Vertex[8];
-Square s;
+Cube c;
 Vertex player;
 float ws_width = 1000;
 float ws_height = 1000;
 
-
 void setup() {
   size(1000, 1000);
 
-  s = new Square(
-    new Vertex(0, 0, 0), 
-    new Vertex(10, 0, 0), 
-    new Vertex(10, 10, 0), 
-    new Vertex(0, 10, 0)
-    );
-
-  v[0] = new Vertex(0, 0, 0);
-   v[1] = new Vertex(0, 0, 10);
-   v[2] = new Vertex(0, 10, 0);
-   v[3] = new Vertex(0, 10, 10);
-   v[4] = new Vertex(10, 0, 0);
-   v[5] = new Vertex(10, 0, 10);
-   v[6] = new Vertex(10, 10, 0);
-   v[7] = new Vertex(10, 10, 10);
-
-  /*
-  for(int i = 0;i < 100;i++) {
-   v[i] = new Vertex(random(50) - 25,random(50) - 25,random(20));
-   }
-   */
+  c = new Cube(new Vertex[] {
+    new Vertex(-5,5,5),
+    new Vertex(5,5,5),
+    new Vertex(5,-5,5),
+    new Vertex(-5,-5,5),
+    new Vertex(-5,5,15),
+    new Vertex(5,5,15),
+    new Vertex(5,-5,15),
+    new Vertex(-5,-5,15),
+  });  
 
   player = new Vertex(0, 0, 0);
-
-  //matrix_operator_test();
 
   pmx = mouseX;
   pmy = mouseY;
@@ -62,8 +47,6 @@ void draw() {
   pmx = mouseX;
   pmy = mouseY;
 
-  //println("(x,y) = (" + dx + "," + dy + ")");
-
   p_angle += (float)dx / 100.;
   r_angle -= (float)dy / 100.;
 
@@ -73,16 +56,7 @@ void draw() {
 
   player.vec = player.vec.Plus(move);
 
-  //player.vec.values[0][0] += 0.1;
-
-  for (int i = 0; i < 8; i++) {
-    v[i].debug_print(player);
-  }
-  
-  
-  //s.dprint();
-
-  //inf.debug_print(player, r_angle, p_angle, y_angle);
+  c.Draw();
 }
 
 boolean[] key_press = new boolean[9];

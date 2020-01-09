@@ -3,7 +3,7 @@ class Matrix {
   public float[][] values;
   public int row, column;
 
-  public Matrix(int a, int b) {
+  public Matrix(int a, int b) { //Contructor
     row = a;
     column = b;
 
@@ -14,7 +14,7 @@ class Matrix {
     values = new float[row][column];
   }
 
-  public void dprint() {
+  public void dprint() { //Print values
     for (int r = 0; r < row; r++) {
       for (int c = 0; c < column; c++) {
         print(values[r][c] + " ");
@@ -23,7 +23,7 @@ class Matrix {
     }
   }
   
-  public Matrix Product(Matrix y) {
+  public Matrix Product(Matrix y) {//A.Product(B) <=> AB
     Matrix x = this, ret = new Matrix(x.row, y.column);
 
     for (int r = 0; r < x.row; r++) {
@@ -37,6 +37,7 @@ class Matrix {
     } 
     return ret;
   }
+  
   public Matrix Plus(Matrix y) {
     Matrix x = this, ret = new Matrix(x.row, y.column);
     if (x.row != y.row || x.column != y.column) {
@@ -63,6 +64,7 @@ class Matrix {
     return this.Plus(y.Multiple(-1));
   }
 
+  //For Coordinate
   public float x() {
     if (column != 1) {
       throw new IllegalStateException("This method must be called from vector matrix.");
@@ -80,6 +82,15 @@ class Matrix {
       throw new IllegalStateException("This method must be called from vector matrix.");
     }
     return values[2][0];
+  }
+  
+  public Matrix Copy() { //Deep copy
+        Matrix ret = new Matrix(row,column);
+        for(int a = 0;a < row;a++)
+          for(int b = 0;b < column;b++)
+            ret.values[a][b] = values[a][b];
+            
+        return ret;
   }
 }
 
