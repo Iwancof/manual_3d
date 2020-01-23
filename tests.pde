@@ -60,3 +60,12 @@ void matrix_product_from_vertex_test() {
   //println(create_matrix_from_vertex(v).column);
   //m.product(create_matrix_from_vertex(v)).dprint();
 }
+
+void note_instance_test() {
+  NoteInstance ni;
+  //ni.Print();
+}
+
+void save_point_test() {
+  
+}

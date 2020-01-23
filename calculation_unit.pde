@@ -22,7 +22,7 @@ class Matrix {
       println();
     }
   }
-  
+
   public Matrix Product(Matrix y) {//A.Product(B) <=> AB
     Matrix x = this, ret = new Matrix(x.row, y.column);
 
@@ -37,7 +37,7 @@ class Matrix {
     } 
     return ret;
   }
-  
+
   public Matrix Plus(Matrix y) {
     Matrix x = this, ret = new Matrix(x.row, y.column);
     if (x.row != y.row || x.column != y.column) {
@@ -83,19 +83,19 @@ class Matrix {
     }
     return values[2][0];
   }
-  
+
   public Matrix Copy() { //Deep copy
-        Matrix ret = new Matrix(row,column);
-        for(int a = 0;a < row;a++)
-          for(int b = 0;b < column;b++)
-            ret.values[a][b] = values[a][b];
-            
-        return ret;
+    Matrix ret = new Matrix(row, column);
+    for (int a = 0; a < row; a++)
+      for (int b = 0; b < column; b++)
+        ret.values[a][b] = values[a][b];
+
+    return ret;
   }
 }
 
 Matrix create_roll_rotation_matrix(float angle) {
-  Matrix ret = new Matrix(3,3);
+  Matrix ret = new Matrix(3, 3);
   ret.values[0][0] = 1;
   ret.values[0][1] = 0;
   ret.values[0][2] = 0;
@@ -105,12 +105,12 @@ Matrix create_roll_rotation_matrix(float angle) {
   ret.values[2][0] = 0;
   ret.values[2][1] = sin(angle);
   ret.values[2][2] = cos(angle);
-  
-  return ret; 
+
+  return ret;
 }
 
 Matrix create_pitch_rotation_matrix(float angle) {
-  Matrix ret = new Matrix(3,3);
+  Matrix ret = new Matrix(3, 3);
   ret.values[0][0] = cos(angle);
   ret.values[0][1] = 0;
   ret.values[0][2] = -sin(angle);
@@ -120,12 +120,12 @@ Matrix create_pitch_rotation_matrix(float angle) {
   ret.values[2][0] = sin(angle);
   ret.values[2][1] = 0;
   ret.values[2][2] = cos(angle);
-  
+
   return ret;
 }
 
 Matrix create_yaw_rotation_matrix(float angle) {
-  Matrix ret = new Matrix(3,3);
+  Matrix ret = new Matrix(3, 3);
   ret.values[0][0] = cos(angle);
   ret.values[0][1] = -sin(angle);
   ret.values[0][2] = 0;
@@ -137,4 +137,17 @@ Matrix create_yaw_rotation_matrix(float angle) {
   ret.values[2][2] = 1;
 
   return ret;
+}
+
+Matrix dist_to_vis(Vertex nor, Vertex x) {
+  float t =
+    (nor.vec.x() * (x.vec.x() - player.vec.x()) + 
+    nor.vec.y() * (x.vec.y() - player.vec.y()) + 
+    nor.vec.z() * (x.vec.z() - player.vec.z()));
+
+  return plv_x.vec.Multiple(t);
+}
+
+boolean isin(Matrix m, float sx, float sy, float sz) {
+  return abs(m.x()) <= sx / 2 && abs(m.y()) <= sy / 2 && abs(m.z()) <= sz / 2;
 }

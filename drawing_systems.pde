@@ -37,7 +37,7 @@ class Vertex {
 
     if (!t.can_draw()) return;
 
-    crect(t.pos_x(), t.pos_y(), 5, 5);
+    crect(t.pos_x(), t.pos_y(), 20, 20);
   }
   
   //Convert axis for player and convert to display coordinate
@@ -79,6 +79,14 @@ class Vertex {
 
     return t;
   }
+  
+  float abs() {
+    return sqrt(pow(vec.x(),2) + pow(vec.y(),2) + pow(vec.z(),2));
+  }
+  
+  float distance(Vertex v) {
+    return sqrt(pow(vec.x() - v.vec.x(),2) + pow(vec.y() - v.vec.y(),2) + pow(vec.z() - v.vec.z(),2));
+  }
 }
 
 class Point {
@@ -90,5 +98,9 @@ class Point {
   public void ddraw() {
     crect(x, y, 5, 5);
   }
+}
+
+float p_dist(Vertex x) {
+  return player.distance(x);
 }
     
