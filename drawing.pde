@@ -29,6 +29,7 @@ void ctext(String text, float x, float y) {
 void Drawing_initialize() {
   drew_object = 0;
   drew_surface = 0;
+  pressed_keys = "";
   
   Initialize_rotate_matrixes();
   Initialize_gaze_vertexes();
@@ -169,4 +170,5 @@ void draw_player_details() {
   text("Vertual mouse pointer:(x,y) = (" + pseu_x + "," + pseu_y + ").Mouse move:(x,y) = " + dif_x + "," + dif_y + ").",0,80);
   text("Frame rate:" + frameRate + ".",0,100);
   text("Drawing counter,Object: " + drew_object + ",Surface : " + drew_surface + ".",0,120);
+  text("Press keys: " + pressed_keys,0,140);
 }
